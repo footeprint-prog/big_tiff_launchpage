@@ -448,6 +448,7 @@ button {
   .announcement-copy { font-size: clamp(0.72rem, 2.7vw, 0.92rem); line-height: 1.22; }
   .coming-soon { font-size: clamp(0.58rem, 2.05vw, 0.76rem); }
   .signature { font-size: clamp(0.66rem, 2.3vw, 0.84rem); }
+  .kickstarter-link { bottom: -4%; }
   .kickstarter-label > span { font-size: clamp(0.68rem, 2.55vw, 0.9rem); }
   .wisp-entry { right: 8px; bottom: 8px; }
 }
