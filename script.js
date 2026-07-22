@@ -109,6 +109,7 @@ function initMobileExperience() {
   }
 
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   let unlocked = false;
   let revealTimeline;
