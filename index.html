@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Big Tiff's World is opening soon—a storybook adventure through humor, wonder, fantasy, and empowerment."
+    />
+    <meta name="theme-color" content="#101d1d" />
+    <title>Big Tiff's World | The First Adventure Is Coming Soon</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="assets/big-tiff-forest.jpg" as="image" />
+    <link rel="preload" href="assets/TiffGif_Doodling.gif" as="image" type="image/gif" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="world" aria-labelledby="page-title">
+      <h1 id="page-title" class="sr-only">Big Tiff's World</h1>
+
+      <div class="ambient-glow ambient-glow-one" aria-hidden="true"></div>
+      <div class="ambient-glow ambient-glow-two" aria-hidden="true"></div>
+      <div class="forest-wisp forest-wisp-one" aria-hidden="true"></div>
+      <div class="forest-wisp forest-wisp-two" aria-hidden="true"></div>
+      <div class="forest-wisp forest-wisp-three" aria-hidden="true"></div>
+
+      <section class="story-mark" aria-label="Big Tiff's World artwork">
+        <div class="tiff-wrap">
+          <img
+            class="tiff-art"
+            src="assets/TiffGif_Doodling.gif"
+            alt="Big Tiff beneath the title of Big Tiff's World"
+          />
+          <div class="ground-shadow" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="parchment-shell" aria-labelledby="announcement-title">
+        <img class="parchment-art" src="assets/Announcement.png" alt="" aria-hidden="true" />
+
+        <article class="parchment-content">
+          <p class="eyebrow">A storybook announcement</p>
+          <h2 id="announcement-title">The world is opening…</h2>
+          <div class="flourish" aria-hidden="true"><span></span><b>◆</b><span></span></div>
+          <p class="announcement-copy">
+            <span class="drop-cap">T</span>hrough humor, wonder, absurdity and interwoven fantasy unfolds an
+            expansive experience. We follow Big Tiff's explorations of her world, unseen worlds and the journey
+            through the human experience and empowerment.
+          </p>
+          <p class="announcement-copy announcement-copy-secondary">
+            Through the possibility that the things we fear, misunderstand, or avoid often contain fantastical
+            adventures, unexpected truths and treasures worth more than gold.
+          </p>
+          <p class="coming-soon">The first book in <em>Big Tiff's World</em> is coming soon!</p>
+          <p class="signature">— Erica P.</p>
+        </article>
+
+        <button class="kickstarter-link" type="button" aria-describedby="kickstarter-status">
+          <img class="fund-button-art" src="assets/FundCurl.png" alt="" aria-hidden="true" />
+          <span class="kickstarter-label">
+            <span>Follow the adventure</span>
+            <strong>Kickstarter coming soon</strong>
+          </span>
+        </button>
+      </section>
+
+      <button
+        class="wisp-entry"
+        type="button"
+        aria-label="Open the private entrance"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+      >
+        <span class="wisp-wing wisp-wing-left"></span>
+        <span class="wisp-core"></span>
+        <span class="wisp-wing wisp-wing-right"></span>
+        <span class="wisp-trail"></span>
+      </button>
+
+      <p id="kickstarter-status" class="sr-only" aria-live="polite"></p>
+    </main>
+
+    <dialog class="portal-dialog" aria-labelledby="portal-title">
+      <button class="portal-close" type="button" aria-label="Close private entrance">×</button>
+      <p class="portal-eyebrow">For invited travelers</p>
+      <h2 id="portal-title">Private entrance</h2>
+      <form class="portal-form">
+        <label>
+          <span>Traveler name</span>
+          <input name="username" autocomplete="username" required />
+        </label>
+        <label>
+          <span>Secret phrase</span>
+          <input name="password" type="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Enter the world</button>
+      </form>
+    </dialog>
+
+    <div class="notice" role="status" hidden></div>
+  </body>
+</html>
