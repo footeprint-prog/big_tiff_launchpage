@@ -8,15 +8,37 @@
       content="Big Tiff's World is opening soon—a storybook adventure through humor, wonder, fantasy, and empowerment."
     />
     <meta name="theme-color" content="#101d1d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Big Tiff's World" />
+    <meta property="og:title" content="Big Tiff's World | The First Adventure Is Coming Soon" />
+    <meta
+      property="og:description"
+      content="Step into Big Tiff's World—a storybook adventure through humor, wonder, fantasy, and empowerment."
+    />
+    <meta property="og:url" content="https://bigtiffsworld.com/" />
+    <meta property="og:image" content="https://bigtiffsworld.com/assets/og-big-tiffs-world.png" />
+    <meta property="og:image:width" content="1731" />
+    <meta property="og:image:height" content="909" />
+    <meta property="og:image:alt" content="A glowing wisp leads into an enchanted forest clearing." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Big Tiff's World | The First Adventure Is Coming Soon" />
+    <meta
+      name="twitter:description"
+      content="Follow the light into Big Tiff's World. The first storybook adventure is coming soon."
+    />
+    <meta name="twitter:image" content="https://bigtiffsworld.com/assets/og-big-tiffs-world.png" />
+    <link rel="canonical" href="https://bigtiffsworld.com/" />
     <title>Big Tiff's World | The First Adventure Is Coming Soon</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="assets/big-tiff-forest.jpg" as="image" />
     <link rel="preload" href="assets/TiffGif_Doodling.gif" as="image" type="image/gif" />
-    <link rel="stylesheet" href="styles.css?v=coming-soon-spacing-2" />
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="styles.css?v=mobile-story-3" />
+    <script src="assets/vendor/gsap.min.js" defer></script>
+    <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+    <script src="script.js?v=mobile-story-3" defer></script>
   </head>
   <body>
-    <main class="world" aria-labelledby="page-title">
+    <main class="world desktop-world" aria-labelledby="page-title">
       <h1 id="page-title" class="sr-only">Big Tiff's World</h1>
 
       <div class="ambient-glow ambient-glow-one" aria-hidden="true"></div>
@@ -78,6 +100,120 @@
       </button>
 
       <p id="kickstarter-status" class="sr-only" aria-live="polite"></p>
+    </main>
+
+    <main class="mobile-world" aria-labelledby="mobile-page-title">
+      <h1 id="mobile-page-title" class="sr-only">Big Tiff's World</h1>
+
+      <div class="mobile-viewport">
+        <div class="mobile-atmosphere" aria-hidden="true">
+          <span class="mobile-mist mobile-mist-one"></span>
+          <span class="mobile-mist mobile-mist-two"></span>
+          <span class="mobile-star mobile-star-one"></span>
+          <span class="mobile-star mobile-star-two"></span>
+          <span class="mobile-star mobile-star-three"></span>
+        </div>
+
+        <img
+          class="mobile-tree mobile-tree-left"
+          src="assets/mobile-tree-left.webp"
+          alt=""
+          aria-hidden="true"
+        />
+        <img
+          class="mobile-tree mobile-tree-right"
+          src="assets/mobile-tree-right.webp"
+          alt=""
+          aria-hidden="true"
+        />
+
+        <img
+          class="mobile-title mobile-title-opening"
+          src="assets/mobile-title.webp"
+          alt=""
+          aria-hidden="true"
+        />
+
+        <button class="mobile-wisp-cue" type="button" aria-label="Follow the wisp into Big Tiff's World">
+          <span class="mobile-wisp-halo" aria-hidden="true"></span>
+          <span class="mobile-wisp-body" aria-hidden="true"></span>
+          <span class="mobile-wisp-wing mobile-wisp-wing-left" aria-hidden="true"></span>
+          <span class="mobile-wisp-wing mobile-wisp-wing-right" aria-hidden="true"></span>
+          <span class="mobile-wisp-tail" aria-hidden="true"></span>
+          <span class="mobile-wisp-instruction">Follow the light</span>
+        </button>
+
+        <figure class="mobile-tiff">
+          <img
+            src="assets/TiffGif_Doodling.gif"
+            alt="Big Tiff happily drawing in her storybook"
+            width="1098"
+            height="1098"
+          />
+        </figure>
+
+        <div class="mobile-scroll-stage">
+          <div class="mobile-closed-scroll" aria-hidden="true">
+            <img src="assets/FundCurl.png" alt="" />
+          </div>
+
+          <div class="mobile-pull-rig">
+            <span class="mobile-pull-cord" aria-hidden="true"></span>
+            <button
+              class="mobile-pull-tag"
+              type="button"
+              aria-controls="mobile-announcement"
+              aria-expanded="false"
+            >
+              <span class="mobile-pull-tag-knot" aria-hidden="true"></span>
+              <span class="mobile-pull-tag-label">Pull</span>
+              <span class="mobile-pull-tag-hint">or tap to open</span>
+            </button>
+          </div>
+
+          <div class="mobile-unfurl" aria-hidden="true">
+            <article id="mobile-announcement" class="mobile-parchment" aria-labelledby="mobile-announcement-title">
+              <img class="mobile-parchment-art" src="assets/Announcement.png" alt="" aria-hidden="true" />
+              <div class="mobile-parchment-copy">
+                <p class="mobile-eyebrow">A storybook announcement</p>
+                <h2 id="mobile-announcement-title">The world is opening…</h2>
+                <div class="mobile-flourish" aria-hidden="true"><span></span><b>◆</b><span></span></div>
+                <p>
+                  <span class="mobile-drop-cap">T</span>hrough humor, wonder, absurdity and interwoven fantasy
+                  unfolds an expansive experience. We follow Big Tiff's explorations of her world, unseen worlds
+                  and the journey through the human experience and empowerment.
+                </p>
+                <p>
+                  Through the possibility that the things we fear, misunderstand, or avoid often contain
+                  fantastical adventures, unexpected truths and treasures worth more than gold.
+                </p>
+                <p class="mobile-coming-soon">
+                  The first book in <em>Big Tiff's World</em> is coming soon!
+                </p>
+                <p class="mobile-signature">— Erica P.</p>
+              </div>
+
+              <button
+                class="mobile-fund-button"
+                type="button"
+                aria-describedby="mobile-kickstarter-status"
+              >
+                <img src="assets/FundCurl.png" alt="" aria-hidden="true" />
+                <span>Support Tiff's Adventure</span>
+              </button>
+            </article>
+
+            <img
+              class="mobile-title mobile-title-finale"
+              src="assets/mobile-title.webp"
+              alt="Big Tiff's World"
+            />
+          </div>
+        </div>
+
+        <p id="mobile-stage-status" class="sr-only" aria-live="polite"></p>
+        <p id="mobile-kickstarter-status" class="sr-only" aria-live="polite"></p>
+      </div>
     </main>
 
     <dialog class="portal-dialog" aria-labelledby="portal-title">
