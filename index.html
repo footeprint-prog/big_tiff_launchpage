@@ -32,10 +32,10 @@
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="assets/big-tiff-forest.jpg" as="image" />
     <link rel="preload" href="assets/TiffGif_Doodling.gif" as="image" type="image/gif" />
-    <link rel="stylesheet" href="styles.css?v=mobile-story-4" />
+    <link rel="stylesheet" href="styles.css?v=mobile-story-5" />
     <script src="assets/vendor/gsap.min.js" defer></script>
     <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
-    <script src="script.js?v=mobile-story-4" defer></script>
+    <script src="script.js?v=mobile-story-5" defer></script>
   </head>
   <body>
     <main class="world desktop-world" aria-labelledby="page-title">
@@ -114,18 +114,10 @@
           <span class="mobile-star mobile-star-three"></span>
         </div>
 
-        <img
-          class="mobile-tree mobile-tree-left"
-          src="assets/mobile-tree-left.webp"
-          alt=""
-          aria-hidden="true"
-        />
-        <img
-          class="mobile-tree mobile-tree-right"
-          src="assets/mobile-tree-right.webp"
-          alt=""
-          aria-hidden="true"
-        />
+        <div class="mobile-tree-layer" aria-hidden="true">
+          <img class="mobile-tree mobile-tree-left" src="assets/mobile-tree-left.webp" alt="" />
+          <img class="mobile-tree mobile-tree-right" src="assets/mobile-tree-right.webp" alt="" />
+        </div>
 
         <img
           class="mobile-title mobile-title-opening"
