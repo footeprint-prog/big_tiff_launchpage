@@ -439,7 +439,7 @@ button {
   .world::before { background: linear-gradient(transparent 0 45%, rgb(6 14 15 / 26%) 100%); }
   .tiff-wrap { bottom: 5%; left: 24%; width: min(54vw, 39vh, 350px); }
   .parchment-shell { top: 7%; right: -3%; width: min(80vw, 420px); }
-  .parchment-content { inset: 13% 16% 14%; }
+  .parchment-content { inset: 13% 16% 15%; }
   .eyebrow { font-size: clamp(0.38rem, 1.4vw, 0.5rem); }
   .parchment-content h2 { font-size: clamp(0.9rem, 3.35vw, 1.2rem); }
   .announcement-copy { font-size: clamp(0.72rem, 2.7vw, 0.92rem); line-height: 1.22; }
