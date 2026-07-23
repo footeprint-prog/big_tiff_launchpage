@@ -423,6 +423,9 @@ button {
 .portal-form input:focus { border-color: rgb(190 221 159 / 48%); outline-color: rgb(190 221 159 / 16%); box-shadow: 0 0 12px rgb(116 176 147 / 12%); }
 .portal-form button { height: 46px; margin-top: 4px; color: #2d291d; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; background: linear-gradient(135deg, #d8c07e, #9dae70); border: 1px solid rgb(202 179 114 / 44%); border-radius: 8px 3px; transition: filter 160ms, transform 160ms; }
 .portal-form button:hover, .portal-form button:focus-visible { filter: brightness(1.08); transform: translateY(-1px); }
+.portal-form button:disabled { filter: none; transform: none; opacity: 0.7; cursor: default; }
+.portal-error { margin: 0; color: #e7a99a; font-size: 0.78rem; line-height: 1.35; }
+.portal-error[hidden] { display: none; }
 
 @keyframes firefly { 0%, 100% { opacity: 0.25; transform: translate(0) scale(0.8); } 45% { opacity: 0.95; transform: translate(8px, -12px) scale(1.15); } 70% { opacity: 0.55; transform: translate(-3px, -6px) scale(0.9); } }
 @keyframes forest-wisp-drift { 0%, 100% { opacity: 0.28; transform: translateY(7px) scale(0.78) rotate(-4deg); } 28% { opacity: 0.92; transform: translate(9px, -8px) scale(1.08) rotate(6deg); } 57% { opacity: 0.62; transform: translate(-5px, -18px) scale(0.9) rotate(-7deg); } 78% { opacity: 0.85; transform: translate(4px, -5px) scale(1) rotate(3deg); } }
