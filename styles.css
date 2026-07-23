@@ -1809,3 +1809,169 @@ button {
     font-size: clamp(0.78rem, 3.35vw, 0.88rem);
   }
 }
+
+/* Mobile story 9: restored tree frame and Stage 3 private entrance */
+@media (max-width: 700px) {
+  .mobile-tree-left .mobile-tree-trunk,
+  .mobile-tree-edge-left {
+    right: auto;
+    left: -14vw;
+  }
+
+  .mobile-tree-right .mobile-tree-trunk,
+  .mobile-tree-edge-right {
+    right: -14vw;
+    left: auto;
+  }
+
+  .mobile-tree-trunk {
+    opacity: 0.46;
+    filter: saturate(0.98) brightness(1.02) drop-shadow(0 8px 15px rgb(0 3 4 / 66%));
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0 18%, rgb(0 0 0 / 86%) 27%, #000 35% 100%);
+    mask-image: linear-gradient(to bottom, transparent 0 18%, rgb(0 0 0 / 86%) 27%, #000 35% 100%);
+  }
+
+  .mobile-secondary-tree-left {
+    left: -18vw;
+  }
+
+  .mobile-secondary-tree-right {
+    right: -18vw;
+  }
+
+  .mobile-tree-edge-layer {
+    -webkit-mask-image: linear-gradient(90deg, #000 0 18%, transparent 25% 75%, #000 82% 100%);
+    mask-image: linear-gradient(90deg, #000 0 18%, transparent 25% 75%, #000 82% 100%);
+  }
+
+  .mobile-tree-edge {
+    filter: saturate(1.02) brightness(1.04) drop-shadow(0 7px 14px rgb(0 3 4 / 68%));
+  }
+
+  .mobile-finale-coming-soon {
+    position: relative;
+    z-index: 12;
+    margin: clamp(18px, 2.8svh, 30px) auto 0;
+    color: rgb(231 238 207 / 88%);
+    font-family: "Cinzel Decorative", Georgia, serif;
+    font-size: clamp(0.68rem, 2.9vw, 0.88rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.35;
+    text-align: center;
+    text-shadow: 0 2px 8px #00100d, 0 0 14px rgb(170 225 185 / 18%);
+    text-transform: uppercase;
+  }
+
+  .mobile-title-finale {
+    width: 72%;
+    margin: clamp(8px, 1.3svh, 14px) auto max(calc(env(safe-area-inset-bottom) + 4px), 8px);
+  }
+
+  .mobile-login-wisp {
+    position: absolute;
+    z-index: 19;
+    right: max(calc(env(safe-area-inset-right) + 9px), 11px);
+    bottom: max(calc(env(safe-area-inset-bottom) + 8px), 10px);
+    width: 96px;
+    height: 70px;
+    padding: 0;
+    color: #dffcf2;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 12px, 0);
+    will-change: opacity, transform;
+  }
+
+  .mobile-login-wisp:focus-visible {
+    outline: 2px solid rgb(217 255 244 / 82%);
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+
+  .mobile-login-wisp-halo,
+  .mobile-login-wisp-core,
+  .mobile-login-wisp-wing,
+  .mobile-login-wisp-trail {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+  }
+
+  .mobile-login-wisp-halo {
+    top: 9px;
+    left: 50%;
+    width: 31px;
+    height: 31px;
+    margin-left: -15.5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(219 255 244 / 72%) 0 4%, rgb(112 242 207 / 24%) 24%, transparent 68%);
+    filter: blur(1px);
+    animation: mobile-wisp-halo 2.8s ease-in-out infinite;
+  }
+
+  .mobile-login-wisp-core {
+    top: 20px;
+    left: 50%;
+    width: 8px;
+    height: 10px;
+    margin-left: -4px;
+    border-radius: 52% 48% 62% 38%;
+    background: #d9fff5;
+    box-shadow: 0 0 5px #a9ffe8, 0 0 13px rgb(94 238 200 / 68%);
+  }
+
+  .mobile-login-wisp-wing {
+    top: 18px;
+    width: 18px;
+    height: 8px;
+    border: 1px solid rgb(222 255 247 / 76%);
+    border-radius: 60% 40% 64% 36%;
+  }
+
+  .mobile-login-wisp-wing-left {
+    right: calc(50% + 4px);
+    transform: rotate(15deg);
+  }
+
+  .mobile-login-wisp-wing-right {
+    left: calc(50% + 4px);
+    transform: rotate(-15deg);
+  }
+
+  .mobile-login-wisp-trail {
+    top: 28px;
+    left: 50%;
+    width: 17px;
+    height: 18px;
+    border-bottom: 1px solid rgb(211 255 243 / 65%);
+    border-left: 1px solid rgb(211 255 243 / 65%);
+    border-radius: 0 0 0 90%;
+    transform: rotate(-18deg);
+  }
+
+  .mobile-login-wisp-label {
+    position: absolute;
+    right: 0;
+    bottom: 3px;
+    left: 0;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-align: center;
+    text-shadow: 0 1px 5px #00100d;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .mobile-login-wisp-halo {
+    animation: none;
+  }
+}

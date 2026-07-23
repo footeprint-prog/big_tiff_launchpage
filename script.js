@@ -21,26 +21,33 @@ notice?.addEventListener("click", () => {
 function initDesktopExperience() {
   const kickstarterButton = document.querySelector(".desktop-world .kickstarter-link");
   const statusText = document.querySelector("#kickstarter-status");
-  const entranceButton = document.querySelector(".wisp-entry");
+  const entranceButtons = Array.from(
+    document.querySelectorAll(".wisp-entry, .mobile-login-wisp"),
+  );
   const dialog = document.querySelector(".portal-dialog");
   const closeButton = document.querySelector(".portal-close");
   const portalForm = document.querySelector(".portal-form");
+  let lastEntranceButton = null;
 
   kickstarterButton?.addEventListener("click", () => {
     showNotice("Kickstarter details are coming soon. Please check back for the next chapter!", statusText);
   });
 
-  if (!entranceButton || !dialog || !closeButton || !portalForm) return;
+  if (!entranceButtons.length || !dialog || !closeButton || !portalForm) return;
 
-  entranceButton.addEventListener("click", () => {
-    entranceButton.setAttribute("aria-expanded", "true");
-    dialog.showModal();
+  entranceButtons.forEach((entranceButton) => {
+    entranceButton.addEventListener("click", () => {
+      lastEntranceButton = entranceButton;
+      entranceButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+      entranceButton.setAttribute("aria-expanded", "true");
+      dialog.showModal();
+    });
   });
 
   function closeDialog() {
     dialog.close();
-    entranceButton.setAttribute("aria-expanded", "false");
-    entranceButton.focus();
+    entranceButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+    lastEntranceButton?.focus();
   }
 
   closeButton.addEventListener("click", closeDialog);
@@ -48,7 +55,7 @@ function initDesktopExperience() {
     if (event.target === dialog) closeDialog();
   });
   dialog.addEventListener("close", () => {
-    entranceButton.setAttribute("aria-expanded", "false");
+    entranceButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
   });
   portalForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -89,6 +96,7 @@ function initMobileExperience() {
   const stageStatus = document.querySelector("#mobile-stage-status");
   const mobileFundButton = document.querySelector(".mobile-fund-button");
   const mobileFundStatus = document.querySelector("#mobile-kickstarter-status");
+  const mobileLoginWisp = document.querySelector(".mobile-login-wisp");
 
   mobileFundButton?.addEventListener("click", () => {
     showNotice(
@@ -118,7 +126,8 @@ function initMobileExperience() {
     !pullRig ||
     !pullCord ||
     !pullTag ||
-    !unfurl
+    !unfurl ||
+    !mobileLoginWisp
   ) {
     mobileWorld.classList.add("mobile-world-fallback");
     unfurl?.setAttribute("aria-hidden", "false");
@@ -224,6 +233,10 @@ function initMobileExperience() {
     unfurl.style.opacity = String(range(revealProgress, 0.03, 0.2));
     unfurl.style.clipPath = `inset(0 0 ${(1 - revealProgress) * 100}% 0)`;
     unfurl.style.pointerEvents = revealProgress > 0.88 ? "auto" : "none";
+    const loginProgress = ease(range(revealProgress, 0.78, 0.97));
+    mobileLoginWisp.style.opacity = String(loginProgress * 0.68);
+    mobileLoginWisp.style.transform = `translate3d(0, ${(1 - loginProgress) * 12}px, 0)`;
+    mobileLoginWisp.style.pointerEvents = loginProgress > 0.82 ? "auto" : "none";
 
     forestFloor.style.opacity = String(floorProgress);
     forestFloor.style.transform = `translate3d(-50%, ${(1 - floorProgress) * 18}svh, 0) scale(${0.9 + floorProgress * 0.1})`;
