@@ -62,12 +62,15 @@ function initMobileExperience() {
   const mobileQuery = window.matchMedia("(max-width: 700px)");
   const mobileWorld = document.querySelector(".mobile-world");
   const mobileViewport = document.querySelector(".mobile-viewport");
-  if (!mobileQuery.matches || !mobileWorld) return;
+  if (!mobileQuery.matches || !mobileWorld || !mobileViewport) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const leftTree = document.querySelector(".mobile-tree-left");
-  const rightTree = document.querySelector(".mobile-tree-right");
-  const treeTrunks = document.querySelectorAll(".mobile-tree-trunk");
+  const leftCanopy = document.querySelector(".mobile-tree-left .mobile-tree-canopy");
+  const rightCanopy = document.querySelector(".mobile-tree-right .mobile-tree-canopy");
+  const leftTrunk = document.querySelector(".mobile-tree-left .mobile-tree-trunk");
+  const rightTrunk = document.querySelector(".mobile-tree-right .mobile-tree-trunk");
+  const stageThreeShade = document.querySelector(".mobile-stage-three-shade");
+  const forestFloor = document.querySelector(".mobile-forest-floor");
   const openingTitle = document.querySelector(".mobile-title-opening");
   const wispCue = document.querySelector(".mobile-wisp-cue");
   const tiff = document.querySelector(".mobile-tiff");
@@ -89,8 +92,12 @@ function initMobileExperience() {
   });
 
   if (
-    !leftTree ||
-    !rightTree ||
+    !leftCanopy ||
+    !rightCanopy ||
+    !leftTrunk ||
+    !rightTrunk ||
+    !stageThreeShade ||
+    !forestFloor ||
     !openingTitle ||
     !wispCue ||
     !tiff ||
@@ -106,68 +113,102 @@ function initMobileExperience() {
     return;
   }
 
+  document.documentElement.classList.add("mobile-story-active");
+  document.body.classList.add("mobile-story-active");
+
   let unlocked = false;
-  let revealAnchor = 0;
   let dragStartY = 0;
   let dragDistance = 0;
   let activePointerId = null;
   let suppressNextClick = false;
-
+  let pullingTag = false;
+  let gestureLastY = null;
+  let targetProgress = 0;
+  let currentProgress = 0;
   let framePending = false;
+  let lastAnnouncedStage = "";
 
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const range = (value, start, end) => clamp((value - start) / (end - start));
   const ease = (value) => value * value * (3 - 2 * value);
-  const viewportHeight = () => document.querySelector(".mobile-viewport")?.clientHeight || window.innerHeight;
-  const openingEnd = () => viewportHeight() * 4.2;
-  const revealDistance = () => viewportHeight() * 5.2;
+  const viewportHeight = () => mobileViewport.clientHeight || window.innerHeight;
 
-  function announceStage(message) {
+  function announceStage(key, message) {
+    if (key === lastAnnouncedStage) return;
+    lastAnnouncedStage = key;
     if (stageStatus) stageStatus.textContent = message;
   }
 
   function renderMobileStory() {
     framePending = false;
-    const height = viewportHeight();
-    const openingProgress = reducedMotion ? (window.scrollY > height * 0.7 ? 1 : 0) : clamp(window.scrollY / openingEnd());
-    const revealProgress = unlocked
-      ? (reducedMotion ? (window.scrollY > revealAnchor + height * 0.7 ? 1 : 0) : clamp((window.scrollY - revealAnchor) / revealDistance()))
-      : 0;
-    const characterProgress = ease(range(openingProgress, 0.18, 0.74));
-    const scrollProgress = ease(range(openingProgress, 0.34, 0.86));
-    const wispProgress = ease(range(openingProgress, 0.04, 0.46));
-    const revealEase = ease(revealProgress);
-    const treeX = openingProgress * 16 + revealEase * 8;
-    const treeY = openingProgress * -3.5 + revealEase * -8;
-    const trunkProgress = ease(range(openingProgress, 0.16, 0.62));
+    const distance = targetProgress - currentProgress;
+    currentProgress = reducedMotion
+      ? targetProgress
+      : Math.abs(distance) < 0.0005
+        ? targetProgress
+        : currentProgress + distance * 0.24;
 
-    leftTree.style.transform = `translate3d(${-treeX}vw, ${treeY}svh, 0)`;
-    rightTree.style.transform = `translate3d(${treeX}vw, ${treeY}svh, 0)`;
-    treeTrunks.forEach((trunk) => {
-      trunk.style.opacity = String(trunkProgress);
-      trunk.style.transform = `translate3d(0, ${(1 - trunkProgress) * 12}svh, 0)`;
-    });
-    openingTitle.style.transform = `translate3d(0, ${-openingProgress * 7 - revealEase * 4}svh, 0) scale(${1 - openingProgress * 0.24 - revealEase * 0.12})`;
-    openingTitle.style.opacity = String(1 - revealEase * 0.88);
-    wispCue.style.transform = `translate3d(0, ${wispProgress * 24}px, 0)`;
+    const openingProgress = clamp(currentProgress);
+    const revealProgress = clamp(currentProgress - 1);
+    const openingEase = ease(openingProgress);
+    const revealEase = ease(revealProgress);
+    const characterProgress = ease(range(openingProgress, 0.34, 0.82));
+    const scrollProgress = ease(range(openingProgress, 0.48, 0.9));
+    const wispProgress = ease(range(openingProgress, 0.03, 0.38));
+    const floorProgress = ease(range(revealProgress, 0.12, 0.92));
+
+    const canopyX = openingEase * 66 + revealEase * 10;
+    const canopyY = -openingEase * 2 - revealEase * 20;
+    const canopyScale = 1 - openingEase * 0.3 - revealEase * 0.08;
+    const canopyOpacity = 1 - revealEase * 0.26;
+    leftCanopy.style.transform = `translate3d(${-canopyX}vw, ${canopyY}svh, 0) scale(${canopyScale})`;
+    rightCanopy.style.transform = `translate3d(${canopyX}vw, ${canopyY}svh, 0) scaleX(-1) scale(${canopyScale})`;
+    leftCanopy.style.opacity = String(canopyOpacity);
+    rightCanopy.style.opacity = String(canopyOpacity);
+
+    const trunkX = -openingEase * 7 + revealEase * 18;
+    const trunkY = openingEase * 10 - revealEase * 10;
+    const trunkOpacity = 0.18 + openingEase * 0.82;
+    leftTrunk.style.transform = `translate3d(${trunkX}vw, ${trunkY}svh, 0)`;
+    rightTrunk.style.transform = `translate3d(${-trunkX}vw, ${trunkY}svh, 0) scaleX(-1)`;
+    leftTrunk.style.opacity = String(trunkOpacity);
+    rightTrunk.style.opacity = String(trunkOpacity);
+    leftTrunk.style.clipPath = `inset(0 0 ${(1 - openingEase) * 62}% 0)`;
+    rightTrunk.style.clipPath = `inset(0 0 ${(1 - openingEase) * 62}% 0)`;
+
+    openingTitle.style.transform = `translate3d(0, ${-openingEase * 2.5 - revealEase * 9}svh, 0) scale(${1 - openingEase * 0.12 - revealEase * 0.08})`;
+    openingTitle.style.opacity = String(1 - range(revealProgress, 0.02, 0.34));
+    wispCue.style.transform = `translate3d(0, ${wispProgress * 20}px, 0)`;
     wispCue.style.opacity = String(1 - wispProgress);
-    wispCue.style.pointerEvents = wispProgress > 0.8 ? "none" : "auto";
-    tiff.style.transform = `translate3d(0, ${(1 - characterProgress) * 34 - revealEase * 21}svh, 0) scale(${0.76 + characterProgress * 0.24 - revealEase * 0.5})`;
+    wispCue.style.pointerEvents = wispProgress > 0.82 ? "none" : "auto";
+
+    tiff.style.transform = `translate3d(0, ${(1 - characterProgress) * 30 - revealEase * 22}svh, 0) scale(${0.78 + characterProgress * 0.22 - revealEase * 0.46})`;
     tiff.style.opacity = String(characterProgress);
-    scrollStage.style.transform = `translate3d(0, ${(1 - scrollProgress) * 32 - revealEase * 37}svh, 0) scale(${1 - revealEase * 0.07})`;
+    scrollStage.style.transform = `translate3d(0, ${(1 - scrollProgress) * 30 - revealEase * 43}svh, 0) scale(${1 - revealEase * 0.06})`;
     scrollStage.style.opacity = String(scrollProgress);
-    closedScroll.style.opacity = String(1 - range(revealProgress, 0, 0.12));
-    pullRig.style.opacity = String(1 - range(revealProgress, 0, 0.12));
-    unfurl.style.opacity = String(range(revealProgress, 0.01, 0.16));
+    closedScroll.style.opacity = String(1 - range(revealProgress, 0.02, 0.18));
+    pullRig.style.opacity = String(1 - range(revealProgress, 0.02, 0.18));
+    unfurl.style.opacity = String(range(revealProgress, 0.03, 0.2));
     unfurl.style.clipPath = `inset(0 0 ${(1 - revealProgress) * 100}% 0)`;
-    unfurl.style.pointerEvents = revealProgress > 0.92 ? "auto" : "none";
+    unfurl.style.pointerEvents = revealProgress > 0.88 ? "auto" : "none";
+
+    forestFloor.style.opacity = String(floorProgress);
+    forestFloor.style.transform = `translate3d(-50%, ${(1 - floorProgress) * 18}svh, 0) scale(${0.9 + floorProgress * 0.1})`;
+    stageThreeShade.style.opacity = String(revealEase);
+    mobileViewport.style.setProperty("--mobile-story-progress", currentProgress.toFixed(4));
 
     if (revealProgress > 0.84) {
-      announceStage("The announcement is open. Tiff's first adventure is coming soon.");
+      announceStage("stage-three", "The announcement is open. Tiff's first adventure is coming soon.");
     } else if (revealProgress > 0.16) {
-      announceStage("The announcement scroll is unfurling.");
+      announceStage("unfurling", "The announcement scroll is unfurling.");
     } else if (openingProgress > 0.92) {
-      announceStage("You found Big Tiff and the sealed announcement.");
+      announceStage("stage-two", "You found Big Tiff and the sealed announcement.");
+    } else {
+      announceStage("stage-one", "Follow the light into Big Tiff's World.");
+    }
+
+    if (Math.abs(targetProgress - currentProgress) >= 0.0005) {
+      requestRender();
     }
   }
 
@@ -180,12 +221,11 @@ function initMobileExperience() {
   function unlockScroll() {
     if (unlocked) return;
     unlocked = true;
-    revealAnchor = window.scrollY;
+    targetProgress = Math.max(targetProgress, 1.025);
     pullTag.setAttribute("aria-expanded", "true");
     pullTag.style.pointerEvents = "none";
-    if (mobileViewport) mobileViewport.scrollTop = 0;
     unfurl.setAttribute("aria-hidden", "false");
-    announceStage("The seal releases. Scroll to unfurl Big Tiff's announcement.");
+    announceStage("released", "The seal releases. Scroll to unfurl Big Tiff's announcement.");
 
     pullTag.style.transform = "translate3d(0, 76px, 0) rotate(2.5deg)";
     pullCord.style.transform = "scaleY(2.15)";
@@ -199,6 +239,7 @@ function initMobileExperience() {
 
   pullTag.addEventListener("pointerdown", (event) => {
     if (unlocked) return;
+    pullingTag = true;
     activePointerId = event.pointerId;
     dragStartY = event.clientY;
     dragDistance = 0;
@@ -220,6 +261,7 @@ function initMobileExperience() {
       pullTag.releasePointerCapture(event.pointerId);
     }
     activePointerId = null;
+    pullingTag = false;
     if (dragDistance >= 58) {
       unlockScroll();
     } else {
@@ -231,6 +273,7 @@ function initMobileExperience() {
   pullTag.addEventListener("pointercancel", (event) => {
     if (event.pointerId !== activePointerId || unlocked) return;
     activePointerId = null;
+    pullingTag = false;
     resetPullRig();
   });
 
@@ -244,13 +287,72 @@ function initMobileExperience() {
   });
 
   wispCue.addEventListener("click", () => {
-    window.scrollBy({
-      top: viewportHeight() * 0.62,
-      behavior: reducedMotion ? "auto" : "smooth",
-    });
+    targetProgress = Math.min(1, targetProgress + 0.24);
+    requestRender();
   });
 
-  window.addEventListener("scroll", requestRender, { passive: true });
+  function setStoryProgress(nextProgress) {
+    const maximum = unlocked ? 2 : 1;
+    targetProgress = clamp(nextProgress, 0, maximum);
+    requestRender();
+  }
+
+  mobileWorld.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.touches.length !== 1 || pullingTag || event.target.closest("button, input, textarea, select")) {
+        gestureLastY = null;
+        return;
+      }
+      gestureLastY = event.touches[0].clientY;
+    },
+    { passive: true },
+  );
+
+  mobileWorld.addEventListener(
+    "touchmove",
+    (event) => {
+      if (gestureLastY === null || event.touches.length !== 1 || pullingTag) return;
+      const nextY = event.touches[0].clientY;
+      const delta = gestureLastY - nextY;
+      gestureLastY = nextY;
+      if (Math.abs(delta) < 0.5) return;
+      event.preventDefault();
+      setStoryProgress(targetProgress + delta / (viewportHeight() * 2.15));
+    },
+    { passive: false },
+  );
+
+  mobileWorld.addEventListener("touchend", () => {
+    gestureLastY = null;
+  }, { passive: true });
+  mobileWorld.addEventListener("touchcancel", () => {
+    gestureLastY = null;
+  }, { passive: true });
+
+  mobileWorld.addEventListener(
+    "wheel",
+    (event) => {
+      event.preventDefault();
+      setStoryProgress(targetProgress + event.deltaY / (viewportHeight() * 2.15));
+    },
+    { passive: false },
+  );
+
+  window.addEventListener("keydown", (event) => {
+    if (event.target.closest("input, textarea, select")) return;
+    const increments = {
+      ArrowDown: 0.08,
+      PageDown: 0.3,
+      " ": 0.3,
+      ArrowUp: -0.08,
+      PageUp: -0.3,
+    };
+    if (!(event.key in increments)) return;
+    event.preventDefault();
+    setStoryProgress(targetProgress + increments[event.key]);
+  });
+
   window.addEventListener("resize", requestRender, { passive: true });
   window.visualViewport?.addEventListener("resize", requestRender, { passive: true });
   renderMobileStory();
