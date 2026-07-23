@@ -519,17 +519,16 @@ button {
     position: relative;
     display: block;
     width: 100%;
-    height: 250vh;
-    height: 250svh;
-    min-height: 1500px;
+    height: 1200vh;
+    height: 1200svh;
+    min-height: 6400px;
     color: #f4ead0;
-    transition: height 500ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .mobile-world.is-unlocked {
-    height: 560vh;
-    height: 560svh;
-    min-height: 3200px;
+    height: 1200vh;
+    height: 1200svh;
+    min-height: 6400px;
   }
 
   .mobile-viewport {
@@ -541,7 +540,7 @@ button {
     height: 100vh;
     height: 100svh;
     min-height: 540px;
-    overflow: hidden;
+    overflow: clip;
     isolation: isolate;
     background:
       radial-gradient(circle at 50% 30%, rgb(65 116 96 / 24%), transparent 28%),
@@ -620,33 +619,63 @@ button {
     position: absolute;
     z-index: 3;
     inset: 0;
-    overflow: hidden;
+    overflow: clip;
     pointer-events: none;
   }
 
   .mobile-tree {
     position: absolute;
-    top: -8vh;
-    top: -8svh;
-    height: 210vh;
-    height: 210svh;
+    inset: 0;
+    pointer-events: none;
+    user-select: none;
+    filter: brightness(1.58) saturate(1.2) contrast(1.04) drop-shadow(0 0 18px rgb(0 4 5 / 55%));
+    transform: translate3d(0, 0, 0);
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .mobile-tree img {
+    position: absolute;
+    display: block;
     max-width: none;
     pointer-events: none;
     user-select: none;
-    filter: brightness(1.32) saturate(1.12) drop-shadow(0 0 18px rgb(0 4 5 / 55%));
-    transform-origin: center top;
   }
 
-  .mobile-tree-left {
-    left: calc(50% - 182vh);
-    left: calc(50% - 182svh);
-    width: auto;
+  .mobile-tree-canopy {
+    top: -1svh;
+    height: auto;
+    object-fit: contain;
   }
 
-  .mobile-tree-right {
-    left: calc(50% - 45vh);
-    left: calc(50% - 45svh);
+  .mobile-tree-left .mobile-tree-canopy {
+    left: -18vw;
+    width: 300vw;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0 26%, transparent 52%);
+    mask-image: linear-gradient(to bottom, #000 0 26%, transparent 52%);
+  }
+
+  .mobile-tree-right .mobile-tree-canopy {
+    right: -10vw;
+    width: 185vw;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0 34%, transparent 62%);
+    mask-image: linear-gradient(to bottom, #000 0 34%, transparent 62%);
+  }
+
+  .mobile-tree-trunk {
+    top: 0;
+    height: 128svh;
     width: auto;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  .mobile-tree-left .mobile-tree-trunk {
+    left: -3vw;
+  }
+
+  .mobile-tree-right .mobile-tree-trunk {
+    right: -4vw;
   }
 
   .mobile-title {
@@ -934,9 +963,12 @@ button {
     top: 0;
     left: 0;
     width: 100%;
-    height: 0;
+    height: auto;
     overflow: hidden;
     opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    pointer-events: none;
+    will-change: clip-path, opacity;
   }
 
   .mobile-parchment {
@@ -1106,6 +1138,10 @@ button {
     pointer-events: none;
   }
 
+  .mobile-world.is-unlocked .mobile-unfurl {
+    display: block;
+  }
+
   .mobile-world-fallback {
     height: auto;
     min-height: 0;
@@ -1140,6 +1176,8 @@ button {
     height: auto;
     overflow: visible;
     opacity: 1;
+    clip-path: none;
+    pointer-events: auto;
   }
 
   @keyframes mobile-mist-drift {
@@ -1184,11 +1222,11 @@ button {
 
 @media (max-width: 700px) and (prefers-reduced-motion: reduce) {
   .mobile-world {
-    height: 220svh;
+    height: 1200svh;
   }
 
   .mobile-world.is-unlocked {
-    height: 390svh;
+    height: 1200svh;
   }
 
   .mobile-mist,

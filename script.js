@@ -61,13 +61,13 @@ function initDesktopExperience() {
 function initMobileExperience() {
   const mobileQuery = window.matchMedia("(max-width: 700px)");
   const mobileWorld = document.querySelector(".mobile-world");
+  const mobileViewport = document.querySelector(".mobile-viewport");
   if (!mobileQuery.matches || !mobileWorld) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const gsap = window.gsap;
-  const ScrollTrigger = window.ScrollTrigger;
   const leftTree = document.querySelector(".mobile-tree-left");
   const rightTree = document.querySelector(".mobile-tree-right");
+  const treeTrunks = document.querySelectorAll(".mobile-tree-trunk");
   const openingTitle = document.querySelector(".mobile-title-opening");
   const wispCue = document.querySelector(".mobile-wisp-cue");
   const tiff = document.querySelector(".mobile-tiff");
@@ -89,8 +89,6 @@ function initMobileExperience() {
   });
 
   if (
-    !gsap ||
-    !ScrollTrigger ||
     !leftTree ||
     !rightTree ||
     !openingTitle ||
@@ -108,155 +106,95 @@ function initMobileExperience() {
     return;
   }
 
-  gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.config({ ignoreMobileResize: true });
-
   let unlocked = false;
-  let revealTimeline;
+  let revealAnchor = 0;
   let dragStartY = 0;
   let dragDistance = 0;
   let activePointerId = null;
   let suppressNextClick = false;
 
-  const openingEnd = () => window.innerHeight * 1.42;
-  const revealEnd = () => window.innerHeight * 5.25;
+  let framePending = false;
+
+  const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+  const range = (value, start, end) => clamp((value - start) / (end - start));
+  const ease = (value) => value * value * (3 - 2 * value);
+  const viewportHeight = () => document.querySelector(".mobile-viewport")?.clientHeight || window.innerHeight;
+  const openingEnd = () => viewportHeight() * 4.2;
+  const revealDistance = () => viewportHeight() * 5.2;
 
   function announceStage(message) {
     if (stageStatus) stageStatus.textContent = message;
   }
 
-  function setOpeningState(open) {
-    gsap.set(leftTree, { x: open ? -window.innerWidth * 0.36 : 0, y: open ? -window.innerHeight * 0.08 : 0 });
-    gsap.set(rightTree, { x: open ? window.innerWidth * 0.36 : 0, y: open ? -window.innerHeight * 0.07 : 0 });
-    gsap.set(openingTitle, {
-      y: open ? -window.innerHeight * 0.07 : 0,
-      scale: open ? 0.76 : 1,
+  function renderMobileStory() {
+    framePending = false;
+    const height = viewportHeight();
+    const openingProgress = reducedMotion ? (window.scrollY > height * 0.7 ? 1 : 0) : clamp(window.scrollY / openingEnd());
+    const revealProgress = unlocked
+      ? (reducedMotion ? (window.scrollY > revealAnchor + height * 0.7 ? 1 : 0) : clamp((window.scrollY - revealAnchor) / revealDistance()))
+      : 0;
+    const characterProgress = ease(range(openingProgress, 0.18, 0.74));
+    const scrollProgress = ease(range(openingProgress, 0.34, 0.86));
+    const wispProgress = ease(range(openingProgress, 0.04, 0.46));
+    const revealEase = ease(revealProgress);
+    const treeX = openingProgress * 16 + revealEase * 8;
+    const treeY = openingProgress * -3.5 + revealEase * -8;
+    const trunkProgress = ease(range(openingProgress, 0.16, 0.62));
+
+    leftTree.style.transform = `translate3d(${-treeX}vw, ${treeY}svh, 0)`;
+    rightTree.style.transform = `translate3d(${treeX}vw, ${treeY}svh, 0)`;
+    treeTrunks.forEach((trunk) => {
+      trunk.style.opacity = String(trunkProgress);
+      trunk.style.transform = `translate3d(0, ${(1 - trunkProgress) * 12}svh, 0)`;
     });
-    gsap.set(wispCue, { autoAlpha: open ? 0 : 1, y: open ? 38 : 0 });
-    gsap.set(tiff, { autoAlpha: open ? 1 : 0, y: open ? 0 : window.innerHeight * 0.34, scale: open ? 1 : 0.76 });
-    gsap.set(scrollStage, { autoAlpha: open ? 1 : 0, y: open ? 0 : window.innerHeight * 0.32 });
+    openingTitle.style.transform = `translate3d(0, ${-openingProgress * 7 - revealEase * 4}svh, 0) scale(${1 - openingProgress * 0.24 - revealEase * 0.12})`;
+    openingTitle.style.opacity = String(1 - revealEase * 0.88);
+    wispCue.style.transform = `translate3d(0, ${wispProgress * 24}px, 0)`;
+    wispCue.style.opacity = String(1 - wispProgress);
+    wispCue.style.pointerEvents = wispProgress > 0.8 ? "none" : "auto";
+    tiff.style.transform = `translate3d(0, ${(1 - characterProgress) * 34 - revealEase * 21}svh, 0) scale(${0.76 + characterProgress * 0.24 - revealEase * 0.5})`;
+    tiff.style.opacity = String(characterProgress);
+    scrollStage.style.transform = `translate3d(0, ${(1 - scrollProgress) * 32 - revealEase * 37}svh, 0) scale(${1 - revealEase * 0.07})`;
+    scrollStage.style.opacity = String(scrollProgress);
+    closedScroll.style.opacity = String(1 - range(revealProgress, 0, 0.12));
+    pullRig.style.opacity = String(1 - range(revealProgress, 0, 0.12));
+    unfurl.style.opacity = String(range(revealProgress, 0.01, 0.16));
+    unfurl.style.clipPath = `inset(0 0 ${(1 - revealProgress) * 100}% 0)`;
+    unfurl.style.pointerEvents = revealProgress > 0.92 ? "auto" : "none";
+
+    if (revealProgress > 0.84) {
+      announceStage("The announcement is open. Tiff's first adventure is coming soon.");
+    } else if (revealProgress > 0.16) {
+      announceStage("The announcement scroll is unfurling.");
+    } else if (openingProgress > 0.92) {
+      announceStage("You found Big Tiff and the sealed announcement.");
+    }
   }
 
-  if (reducedMotion) {
-    setOpeningState(false);
-    ScrollTrigger.create({
-      trigger: mobileWorld,
-      start: () => window.innerHeight * 0.62,
-      onEnter: () => {
-        setOpeningState(true);
-        announceStage("You found Big Tiff and the sealed announcement.");
-      },
-      onLeaveBack: () => {
-        setOpeningState(false);
-        announceStage("The forest entrance closes.");
-      },
-    });
-  } else {
-    gsap
-      .timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: mobileWorld,
-          start: "top top",
-          end: () => `+=${openingEnd()}`,
-          scrub: 0.38,
-          invalidateOnRefresh: true,
-          onLeave: () => announceStage("You found Big Tiff and the sealed announcement."),
-          onEnterBack: () => announceStage("Follow the wisp back toward the forest entrance."),
-        },
-      })
-      .to(leftTree, { x: () => -window.innerWidth * 0.36, y: () => -window.innerHeight * 0.08, duration: 1 }, 0)
-      .to(rightTree, { x: () => window.innerWidth * 0.36, y: () => -window.innerHeight * 0.07, duration: 1 }, 0)
-      .to(openingTitle, { y: () => -window.innerHeight * 0.07, scale: 0.76, duration: 0.78 }, 0.08)
-      .to(wispCue, { autoAlpha: 0, y: 38, duration: 0.34 }, 0.12)
-      .to(tiff, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62 }, 0.36)
-      .to(scrollStage, { autoAlpha: 1, y: 0, duration: 0.48 }, 0.52);
+  function requestRender() {
+    if (framePending) return;
+    framePending = true;
+    window.requestAnimationFrame(renderMobileStory);
   }
 
-  function setReducedMotionFinalState() {
-    gsap.set([closedScroll, pullRig], { autoAlpha: 0 });
-    gsap.set(unfurl, { autoAlpha: 1, height: "auto", overflow: "visible" });
-    gsap.set(tiff, { autoAlpha: 1, y: () => -window.innerHeight * 0.235, scale: 0.46 });
-    gsap.set(openingTitle, { autoAlpha: 0.12, y: () => -window.innerHeight * 0.12, scale: 0.62 });
-    gsap.set(leftTree, { x: () => -window.innerWidth * 0.5, y: () => -window.innerHeight * 0.4, scale: 1.06 });
-    gsap.set(rightTree, { x: () => window.innerWidth * 0.5, y: () => -window.innerHeight * 0.37, scale: 1.06 });
-    gsap.set(scrollStage, { y: () => -window.innerHeight * 0.54 });
-  }
-
-  function createRevealTimeline() {
-    if (revealTimeline || reducedMotion) return;
-
-    revealTimeline = gsap
-      .timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: mobileWorld,
-          start: () => mobileWorld.offsetTop + openingEnd(),
-          end: () => mobileWorld.offsetTop + revealEnd(),
-          scrub: 0.42,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (self.progress > 0.84) {
-              announceStage("The announcement is open. Tiff's first adventure is coming soon.");
-            } else if (self.progress > 0.2) {
-              announceStage("The announcement scroll is unfurling.");
-            }
-          },
-        },
-      })
-      .to([closedScroll, pullRig], { autoAlpha: 0, y: -24, duration: 0.1 }, 0)
-      .to(unfurl, { autoAlpha: 1, height: () => unfurl.scrollHeight, duration: 0.3 }, 0.02)
-      .to(tiff, { y: () => -window.innerHeight * 0.235, scale: 0.46, duration: 0.42 }, 0)
-      .to(openingTitle, { autoAlpha: 0.12, y: () => -window.innerHeight * 0.12, scale: 0.62, duration: 0.32 }, 0)
-      .to(leftTree, {
-        x: () => -window.innerWidth * 0.5,
-        y: () => -window.innerHeight * 0.4,
-        scale: 1.06,
-        duration: 1,
-      }, 0)
-      .to(rightTree, {
-        x: () => window.innerWidth * 0.5,
-        y: () => -window.innerHeight * 0.37,
-        scale: 1.06,
-        duration: 1,
-      }, 0)
-      .to(scrollStage, { y: () => -window.innerHeight * 0.54, duration: 0.76 }, 0.24);
-  }
-
-  function unlockScroll({ moveForward = true } = {}) {
+  function unlockScroll() {
     if (unlocked) return;
     unlocked = true;
-    mobileWorld.classList.add("is-unlocked");
+    revealAnchor = window.scrollY;
     pullTag.setAttribute("aria-expanded", "true");
+    pullTag.style.pointerEvents = "none";
+    if (mobileViewport) mobileViewport.scrollTop = 0;
     unfurl.setAttribute("aria-hidden", "false");
     announceStage("The seal releases. Scroll to unfurl Big Tiff's announcement.");
 
-    if (reducedMotion) {
-      window.setTimeout(() => {
-        setReducedMotionFinalState();
-        ScrollTrigger.refresh();
-        if (moveForward) {
-          window.scrollTo({ top: openingEnd() + window.innerHeight * 1.25, behavior: "auto" });
-        }
-      }, 80);
-      return;
-    }
-
-    gsap.to(pullTag, { y: 76, rotation: 2.5, duration: 0.24, ease: "power2.out" });
-    gsap.to(pullCord, { scaleY: 2.15, duration: 0.24, ease: "power2.out" });
-
-    window.setTimeout(() => {
-      createRevealTimeline();
-      ScrollTrigger.refresh();
-      if (moveForward) {
-        window.scrollTo({ top: openingEnd() + window.innerHeight * 0.18, behavior: "smooth" });
-      }
-    }, 560);
+    pullTag.style.transform = "translate3d(0, 76px, 0) rotate(2.5deg)";
+    pullCord.style.transform = "scaleY(2.15)";
+    requestRender();
   }
 
   function resetPullRig() {
-    gsap.to(pullTag, { y: 0, rotation: 0, duration: 0.34, ease: "back.out(2)" });
-    gsap.to(pullCord, { scaleY: 1, duration: 0.3, ease: "power2.out" });
+    pullTag.style.transform = "translate3d(0, 0, 0) rotate(0deg)";
+    pullCord.style.transform = "scaleY(1)";
   }
 
   pullTag.addEventListener("pointerdown", (event) => {
@@ -272,8 +210,8 @@ function initMobileExperience() {
     if (event.pointerId !== activePointerId || unlocked) return;
     dragDistance = Math.max(0, Math.min(94, event.clientY - dragStartY));
     suppressNextClick = dragDistance > 8;
-    gsap.set(pullTag, { y: dragDistance, rotation: dragDistance * 0.035 });
-    gsap.set(pullCord, { scaleY: 1 + dragDistance / 58 });
+    pullTag.style.transform = `translate3d(0, ${dragDistance}px, 0) rotate(${dragDistance * 0.035}deg)`;
+    pullCord.style.transform = `scaleY(${1 + dragDistance / 58})`;
   });
 
   function finishPull(event) {
@@ -306,15 +244,16 @@ function initMobileExperience() {
   });
 
   wispCue.addEventListener("click", () => {
-    window.scrollTo({
-      top: openingEnd() * 0.98,
+    window.scrollBy({
+      top: viewportHeight() * 0.62,
       behavior: reducedMotion ? "auto" : "smooth",
     });
   });
 
-  if (window.scrollY > openingEnd() * 1.08) {
-    unlockScroll({ moveForward: false });
-  }
+  window.addEventListener("scroll", requestRender, { passive: true });
+  window.addEventListener("resize", requestRender, { passive: true });
+  window.visualViewport?.addEventListener("resize", requestRender, { passive: true });
+  renderMobileStory();
 }
 
 initDesktopExperience();
