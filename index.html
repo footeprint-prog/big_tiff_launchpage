@@ -31,9 +31,10 @@
     <title>Big Tiff's World | The First Adventure Is Coming Soon</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="assets/big-tiff-forest.jpg" as="image" />
+    <link rel="preload" href="assets/mobile-forest-portrait-v2.webp" as="image" media="(max-width: 700px)" />
     <link rel="preload" href="assets/TiffGif_Doodling.gif" as="image" type="image/gif" />
-    <link rel="stylesheet" href="styles.css?v=mobile-story-16" />
-    <script src="script.js?v=mobile-story-16" defer></script>
+    <link rel="stylesheet" href="styles.css?v=mobile-story-17" />
+    <script src="script.js?v=mobile-story-17" defer></script>
   </head>
   <body>
     <main class="world desktop-world" aria-labelledby="page-title">
@@ -112,7 +113,30 @@
           <span class="mobile-star mobile-star-three"></span>
         </div>
 
-        <div class="mobile-tree-layer" aria-hidden="true">
+        <div class="mobile-tree-layer mobile-tree-layer-secondary" aria-hidden="true">
+          <img
+            class="mobile-secondary-tree mobile-secondary-tree-left"
+            src="assets/mobile-tree-arc.webp"
+            alt=""
+          />
+          <img
+            class="mobile-secondary-tree mobile-secondary-tree-right"
+            src="assets/mobile-tree-arc.webp"
+            alt=""
+          />
+          <img
+            class="mobile-secondary-canopy mobile-secondary-canopy-left"
+            src="assets/mobile-canopy-arc.webp"
+            alt=""
+          />
+          <img
+            class="mobile-secondary-canopy mobile-secondary-canopy-right"
+            src="assets/mobile-canopy-arc.webp"
+            alt=""
+          />
+        </div>
+
+        <div class="mobile-tree-layer mobile-tree-layer-primary" aria-hidden="true">
           <div class="mobile-tree mobile-tree-left">
             <img class="mobile-tree-canopy" src="assets/mobile-canopy-arc.webp" alt="" />
             <img class="mobile-tree-trunk" src="assets/mobile-tree-arc.webp" alt="" />
@@ -139,15 +163,18 @@
         />
 
         <button class="mobile-wisp-cue" type="button" aria-label="Follow the wisp into Big Tiff's World">
-          <span class="mobile-wisp-halo" aria-hidden="true"></span>
-          <span class="mobile-wisp-body" aria-hidden="true"></span>
-          <span class="mobile-wisp-wing mobile-wisp-wing-left" aria-hidden="true"></span>
-          <span class="mobile-wisp-wing mobile-wisp-wing-right" aria-hidden="true"></span>
-          <span class="mobile-wisp-tail" aria-hidden="true"></span>
-          <span class="mobile-wisp-instruction">Follow the light</span>
+          <span class="mobile-wisp-anchor">
+            <span class="mobile-wisp-halo" aria-hidden="true"></span>
+            <span class="mobile-wisp-body" aria-hidden="true"></span>
+            <span class="mobile-wisp-wing mobile-wisp-wing-left" aria-hidden="true"></span>
+            <span class="mobile-wisp-wing mobile-wisp-wing-right" aria-hidden="true"></span>
+            <span class="mobile-wisp-tail" aria-hidden="true"></span>
+            <span class="mobile-wisp-instruction">Follow the light</span>
+          </span>
         </button>
 
         <figure class="mobile-tiff">
+          <span class="mobile-tiff-perch" aria-hidden="true"></span>
           <img
             src="assets/TiffGif_Doodling.gif"
             alt="Big Tiff happily drawing in her storybook"
@@ -159,6 +186,9 @@
         <div class="mobile-scroll-stage">
           <div class="mobile-closed-scroll" aria-hidden="true">
             <img src="assets/FundCurl.png" alt="" />
+            <span class="mobile-cord-wrap mobile-cord-wrap-left"></span>
+            <span class="mobile-cord-wrap mobile-cord-wrap-right"></span>
+            <span class="mobile-cord-knot"></span>
           </div>
 
           <div class="mobile-pull-rig">
@@ -213,6 +243,19 @@
               alt="Big Tiff's World"
             />
           </div>
+        </div>
+
+        <div class="mobile-tree-edge-layer" aria-hidden="true">
+          <img
+            class="mobile-tree-edge mobile-tree-edge-left"
+            src="assets/mobile-tree-arc.webp"
+            alt=""
+          />
+          <img
+            class="mobile-tree-edge mobile-tree-edge-right"
+            src="assets/mobile-tree-arc.webp"
+            alt=""
+          />
         </div>
 
         <p id="mobile-stage-status" class="sr-only" aria-live="polite"></p>

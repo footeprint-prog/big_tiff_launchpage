@@ -69,6 +69,12 @@ function initMobileExperience() {
   const rightCanopy = document.querySelector(".mobile-tree-right .mobile-tree-canopy");
   const leftTrunk = document.querySelector(".mobile-tree-left .mobile-tree-trunk");
   const rightTrunk = document.querySelector(".mobile-tree-right .mobile-tree-trunk");
+  const leftSecondaryCanopy = document.querySelector(".mobile-secondary-canopy-left");
+  const rightSecondaryCanopy = document.querySelector(".mobile-secondary-canopy-right");
+  const leftSecondaryTree = document.querySelector(".mobile-secondary-tree-left");
+  const rightSecondaryTree = document.querySelector(".mobile-secondary-tree-right");
+  const leftEdgeTree = document.querySelector(".mobile-tree-edge-left");
+  const rightEdgeTree = document.querySelector(".mobile-tree-edge-right");
   const stageThreeShade = document.querySelector(".mobile-stage-three-shade");
   const forestFloor = document.querySelector(".mobile-forest-floor");
   const openingTitle = document.querySelector(".mobile-title-opening");
@@ -96,6 +102,12 @@ function initMobileExperience() {
     !rightCanopy ||
     !leftTrunk ||
     !rightTrunk ||
+    !leftSecondaryCanopy ||
+    !rightSecondaryCanopy ||
+    !leftSecondaryTree ||
+    !rightSecondaryTree ||
+    !leftEdgeTree ||
+    !rightEdgeTree ||
     !stageThreeShade ||
     !forestFloor ||
     !openingTitle ||
@@ -127,6 +139,7 @@ function initMobileExperience() {
   let currentProgress = 0;
   let framePending = false;
   let lastAnnouncedStage = "";
+  let autoJourneyFrame = 0;
 
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const range = (value, start, end) => clamp((value - start) / (end - start));
@@ -152,8 +165,9 @@ function initMobileExperience() {
     const revealProgress = clamp(currentProgress - 1);
     const openingEase = ease(openingProgress);
     const revealEase = ease(revealProgress);
-    const characterProgress = ease(range(openingProgress, 0.34, 0.82));
-    const scrollProgress = ease(range(openingProgress, 0.48, 0.9));
+    const ensembleProgress = ease(range(openingProgress, 0.36, 0.9));
+    const characterProgress = ensembleProgress;
+    const scrollProgress = ensembleProgress;
     const wispProgress = ease(range(openingProgress, 0.03, 0.38));
     const floorProgress = ease(range(revealProgress, 0.12, 0.92));
 
@@ -165,9 +179,14 @@ function initMobileExperience() {
     rightCanopy.style.transform = `translate3d(${canopyX}vw, ${canopyY}svh, 0) scaleX(-1) scale(${canopyScale})`;
     leftCanopy.style.opacity = String(canopyOpacity);
     rightCanopy.style.opacity = String(canopyOpacity);
+    const secondaryCanopyX = openingEase * 49 + revealEase * 8;
+    const secondaryCanopyY = openingEase * 5 - revealEase * 15;
+    const secondaryCanopyScale = 1.08 - openingEase * 0.2 - revealEase * 0.05;
+    leftSecondaryCanopy.style.transform = `translate3d(${-secondaryCanopyX}vw, ${secondaryCanopyY}svh, 0) rotate(-7deg) scale(${secondaryCanopyScale})`;
+    rightSecondaryCanopy.style.transform = `translate3d(${secondaryCanopyX}vw, ${secondaryCanopyY}svh, 0) rotate(7deg) scaleX(-1) scale(${secondaryCanopyScale})`;
 
-    const trunkX = -openingEase * 7 + revealEase * 18;
-    const trunkY = openingEase * 10 - revealEase * 10;
+    const trunkX = -openingEase * 4 + revealEase * 5;
+    const trunkY = openingEase * 8 - revealEase * 8;
     const trunkOpacity = 0.18 + openingEase * 0.82;
     leftTrunk.style.transform = `translate3d(${trunkX}vw, ${trunkY}svh, 0)`;
     rightTrunk.style.transform = `translate3d(${-trunkX}vw, ${trunkY}svh, 0) scaleX(-1)`;
@@ -175,6 +194,20 @@ function initMobileExperience() {
     rightTrunk.style.opacity = String(trunkOpacity);
     leftTrunk.style.clipPath = `inset(0 0 ${(1 - openingEase) * 62}% 0)`;
     rightTrunk.style.clipPath = `inset(0 0 ${(1 - openingEase) * 62}% 0)`;
+    const secondaryTreeX = openingEase * 2 - revealEase * 3;
+    const secondaryTreeY = openingEase * 7 - revealEase * 5;
+    leftSecondaryTree.style.transform = `translate3d(${-secondaryTreeX}vw, ${secondaryTreeY}svh, 0) scale(1.12)`;
+    rightSecondaryTree.style.transform = `translate3d(${secondaryTreeX}vw, ${secondaryTreeY}svh, 0) scaleX(-1) scale(1.12)`;
+    leftSecondaryTree.style.opacity = String(0.06 + openingEase * 0.44);
+    rightSecondaryTree.style.opacity = String(0.06 + openingEase * 0.44);
+    leftEdgeTree.style.transform = `translate3d(${trunkX}vw, ${trunkY}svh, 0)`;
+    rightEdgeTree.style.transform = `translate3d(${-trunkX}vw, ${trunkY}svh, 0) scaleX(-1)`;
+    const edgeOpacity = Math.min(
+      1,
+      0.12 + range(openingProgress, 0.28, 0.72) * (0.62 + revealEase * 0.26),
+    );
+    leftEdgeTree.style.opacity = String(edgeOpacity);
+    rightEdgeTree.style.opacity = String(edgeOpacity);
 
     openingTitle.style.transform = `translate3d(0, ${-openingEase * 2.5 - revealEase * 9}svh, 0) scale(${1 - openingEase * 0.12 - revealEase * 0.08})`;
     openingTitle.style.opacity = String(1 - range(revealProgress, 0.02, 0.34));
@@ -182,9 +215,9 @@ function initMobileExperience() {
     wispCue.style.opacity = String(1 - wispProgress);
     wispCue.style.pointerEvents = wispProgress > 0.82 ? "none" : "auto";
 
-    tiff.style.transform = `translate3d(0, ${(1 - characterProgress) * 30 - revealEase * 22}svh, 0) scale(${0.78 + characterProgress * 0.22 - revealEase * 0.46})`;
+    tiff.style.transform = `translate3d(0, ${(1 - characterProgress) * 31 - revealEase * 21}svh, 0) scale(${0.78 + characterProgress * 0.22 - revealEase * 0.54})`;
     tiff.style.opacity = String(characterProgress);
-    scrollStage.style.transform = `translate3d(0, ${(1 - scrollProgress) * 30 - revealEase * 43}svh, 0) scale(${1 - revealEase * 0.06})`;
+    scrollStage.style.transform = `translate3d(0, ${(1 - scrollProgress) * 31 - revealEase * 47}svh, 0) scale(${1 - revealEase * 0.08})`;
     scrollStage.style.opacity = String(scrollProgress);
     closedScroll.style.opacity = String(1 - range(revealProgress, 0.02, 0.18));
     pullRig.style.opacity = String(1 - range(revealProgress, 0.02, 0.18));
@@ -218,10 +251,28 @@ function initMobileExperience() {
     window.requestAnimationFrame(renderMobileStory);
   }
 
+  function journeyTo(destination, duration = 760) {
+    window.cancelAnimationFrame(autoJourneyFrame);
+    const startProgress = targetProgress;
+    const distance = destination - startProgress;
+    const startTime = window.performance.now();
+
+    function advanceJourney(now) {
+      const elapsed = clamp((now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - elapsed, 3);
+      targetProgress = startProgress + distance * eased;
+      requestRender();
+      if (elapsed < 1) {
+        autoJourneyFrame = window.requestAnimationFrame(advanceJourney);
+      }
+    }
+
+    autoJourneyFrame = window.requestAnimationFrame(advanceJourney);
+  }
+
   function unlockScroll() {
     if (unlocked) return;
     unlocked = true;
-    targetProgress = Math.max(targetProgress, 1.025);
     pullTag.setAttribute("aria-expanded", "true");
     pullTag.style.pointerEvents = "none";
     unfurl.setAttribute("aria-hidden", "false");
@@ -229,7 +280,7 @@ function initMobileExperience() {
 
     pullTag.style.transform = "translate3d(0, 76px, 0) rotate(2.5deg)";
     pullCord.style.transform = "scaleY(2.15)";
-    requestRender();
+    journeyTo(Math.max(targetProgress, 1.28), reducedMotion ? 1 : 720);
   }
 
   function resetPullRig() {
@@ -287,11 +338,11 @@ function initMobileExperience() {
   });
 
   wispCue.addEventListener("click", () => {
-    targetProgress = Math.min(1, targetProgress + 0.24);
-    requestRender();
+    journeyTo(1, reducedMotion ? 1 : 860);
   });
 
   function setStoryProgress(nextProgress) {
+    window.cancelAnimationFrame(autoJourneyFrame);
     const maximum = unlocked ? 2 : 1;
     targetProgress = clamp(nextProgress, 0, maximum);
     requestRender();
@@ -355,6 +406,23 @@ function initMobileExperience() {
 
   window.addEventListener("resize", requestRender, { passive: true });
   window.visualViewport?.addEventListener("resize", requestRender, { passive: true });
+
+  if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+    const previewParams = new URLSearchParams(window.location.search);
+    const previewStage = Number(previewParams.get("storyStage"));
+    if (previewStage === 2) {
+      targetProgress = 1;
+      currentProgress = 1;
+    } else if (previewStage === 3) {
+      unlocked = true;
+      targetProgress = 2;
+      currentProgress = 2;
+      pullTag.setAttribute("aria-expanded", "true");
+      pullTag.style.pointerEvents = "none";
+      unfurl.setAttribute("aria-hidden", "false");
+    }
+  }
+
   renderMobileStory();
 }
 
