@@ -57,12 +57,99 @@ function initDesktopExperience() {
   dialog.addEventListener("close", () => {
     entranceButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
   });
-  portalForm.addEventListener("submit", (event) => {
+  const portalError = portalForm.querySelector(".portal-error");
+  const submitBtn = portalForm.querySelector("button[type=submit]");
+
+  function showPortalError(message) {
+    if (portalError) {
+      portalError.textContent = message;
+      portalError.hidden = false;
+    }
+  }
+
+  portalForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    closeDialog();
-    portalForm.reset();
-    showNotice("The private path is not open yet.");
+    if (portalError) portalError.hidden = true;
+    const data = new FormData(portalForm);
+    const username = String(data.get("username") || "").trim().toLowerCase();
+    const password = String(data.get("password") || "");
+    if (!username || !password) {
+      showPortalError("Please enter your traveler name and secret phrase.");
+      return;
+    }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Opening…"; }
+    try {
+      const ok = await authenticate(username, password);
+      if (!ok) {
+        showPortalError("That traveler name or secret phrase wasn't recognized.");
+        return;
+      }
+      // Session is stored in localStorage by authenticate(); the tool at /app
+      // reads it (same origin). Head into the world.
+      window.location.href = "app/";
+    } catch (err) {
+      showPortalError("Couldn't reach the gate. Check your connection and try again.");
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Enter the world"; }
+    }
   });
+}
+
+/**
+ * Soft client-side auth against the public big-tiff-data/accounts.json.
+ * Same PBKDF2-SHA256 scheme as the tool (writing.html) and the hash generator.
+ * On success, stores the shared session localStorage key the tool reads.
+ * This is a soft gate, not real security (see the data repo README).
+ */
+const ACCOUNTS_URL =
+  "https://raw.githubusercontent.com/footeprint-prog/big-tiff-data/main/accounts.json";
+const SESSION_KEY = "bigtiff-session";
+const PBKDF2_ITER = 100000;
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const a = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return a;
+}
+function bytesToB64(buf) {
+  let s = "";
+  const a = new Uint8Array(buf);
+  for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]);
+  return btoa(s);
+}
+async function verifyPassword(password, saltB64, expectedHashB64) {
+  const keyMat = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"],
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", hash: "SHA-256", salt: b64ToBytes(saltB64), iterations: PBKDF2_ITER },
+    keyMat,
+    256,
+  );
+  const got = bytesToB64(bits);
+  if (got.length !== expectedHashB64.length) return false;
+  let diff = 0;
+  for (let i = 0; i < got.length; i++) diff |= got.charCodeAt(i) ^ expectedHashB64.charCodeAt(i);
+  return diff === 0;
+}
+async function authenticate(username, password) {
+  const res = await fetch(`${ACCOUNTS_URL}?t=${Date.now()}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("accounts " + res.status);
+  const accounts = await res.json();
+  const user = (accounts.users || []).find((u) => u.username === username);
+  if (!user) return false;
+  const ok = await verifyPassword(password, user.salt, user.hash);
+  if (!ok) return false;
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({ username: user.username, role: user.role, canSyncCanon: !!user.canSyncCanon }),
+  );
+  return true;
 }
 
 function initMobileExperience() {
