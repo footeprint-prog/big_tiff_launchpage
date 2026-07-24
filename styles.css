@@ -1978,12 +1978,12 @@ button {
     inset: 13% 15.5% 15%;
   }
 
-  /* "The world is opening…" small (a bit bigger than the old eyebrow), centered,
-     up on the curl roll (id beats the old .mobile-parchment-copy h2 sizing). */
+  /* "The world is opening…" fixed 12px, centered in the middle of the curl roll
+     (id beats the old .mobile-parchment-copy h2 sizing). */
   #mobile-announcement-title.mobile-curl-line {
-    margin: -22px 0 0;
+    margin: -16px 0 0;
     font-family: "Cinzel Decorative", Georgia, serif;
-    font-size: clamp(0.82rem, 3.6vw, 0.92rem);
+    font-size: 12px;
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: 0.08em;
@@ -1992,33 +1992,36 @@ button {
     color: var(--mobile-parchment-heading);
   }
 
-  /* Big Tiff's World title: below the curl, scaled up to fill the parchment. */
+  /* Big Tiff's World title: dropped below the curl (clear of its drop shadow),
+     scaled to fill the parchment width with safe margins. */
   .mobile-parchment-title {
     display: block;
-    width: 88%;
-    margin: 16px auto 2px;
+    width: 86%;
+    margin: 30px auto 2px;
   }
 
-  /* Body text shrinks a touch so both paragraphs fit under the larger logo. */
+  /* Body text: readable, and clamps down on narrow phones so both paragraphs
+     still fit under the logo. */
   .mobile-parchment-copy > p:not(.mobile-eyebrow, .mobile-coming-soon, .mobile-signature) {
-    font-size: 0.8rem;
-    line-height: 1.14;
+    font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+    line-height: 1.18;
   }
   .mobile-flourish {
     margin: 3px 0;
   }
 
-  /* Bigger, more readable fund-button label. */
+  /* Fund-button label: one size smaller than before. */
   .mobile-fund-button span {
-    font-size: clamp(0.86rem, 3.8vw, 1.1rem);
+    font-size: clamp(0.8rem, 3.4vw, 0.92rem);
     letter-spacing: 0.03em;
   }
 
-  /* "The first book…" (with signature) below the fund button, white on the
-     ground, larger, and centered in the gap down to the bottom of the window. */
+  /* "The first book…" (with signature) sits a stable distance below the fund
+     button — narrow and in the wide part of the clearing so it never drifts
+     into the tree trunks or under the mobile browser toolbar on taller phones. */
   .mobile-ground-coming-soon {
-    margin: 122px auto 0;
-    max-width: 86%;
+    margin: 84px auto 0;
+    max-width: 66%;
     color: #ffffff;
     font-family: "Cormorant Garamond", Georgia, serif;
     font-weight: 600;
