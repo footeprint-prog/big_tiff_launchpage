@@ -1960,19 +1960,8 @@ button {
   }
 
   .mobile-login-wisp-label {
-    position: absolute;
-    right: 0;
-    bottom: 3px;
-    left: 0;
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 0.54rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    line-height: 1;
-    text-align: center;
-    text-shadow: 0 1px 5px #00100d;
-    text-transform: uppercase;
-    white-space: nowrap;
+    /* Hidden per request: bottom login wisp shows just the icon, no text label. */
+    display: none;
   }
 }
 
