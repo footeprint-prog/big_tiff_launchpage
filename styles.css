@@ -1973,25 +1973,39 @@ button {
 
 /* ===== Mobile announcement redesign (requested tweaks) ===== */
 @media (max-width: 700px) {
-  /* "The world is opening…" sits small, centered, up on the curl roll (id beats
-     the old .mobile-parchment-copy h2 sizing). */
+  /* Slightly wider copy area so the enlarged logo + body fit with safe margins. */
+  .mobile-parchment-copy {
+    inset: 13% 15.5% 15%;
+  }
+
+  /* "The world is opening…" small (a bit bigger than the old eyebrow), centered,
+     up on the curl roll (id beats the old .mobile-parchment-copy h2 sizing). */
   #mobile-announcement-title.mobile-curl-line {
     margin: -22px 0 0;
     font-family: "Cinzel Decorative", Georgia, serif;
-    font-size: clamp(0.62rem, 2.7vw, 0.78rem);
+    font-size: clamp(0.82rem, 3.6vw, 0.92rem);
     font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: 0.1em;
+    line-height: 1.12;
+    letter-spacing: 0.08em;
     text-align: center;
     text-transform: uppercase;
     color: var(--mobile-parchment-heading);
   }
 
-  /* Big Tiff's World title, below the curl, on the parchment. */
+  /* Big Tiff's World title: below the curl, scaled up to fill the parchment. */
   .mobile-parchment-title {
     display: block;
-    width: 74%;
-    margin: 8px auto 2px;
+    width: 88%;
+    margin: 16px auto 2px;
+  }
+
+  /* Body text shrinks a touch so both paragraphs fit under the larger logo. */
+  .mobile-parchment-copy > p:not(.mobile-eyebrow, .mobile-coming-soon, .mobile-signature) {
+    font-size: 0.8rem;
+    line-height: 1.14;
+  }
+  .mobile-flourish {
+    margin: 3px 0;
   }
 
   /* Bigger, more readable fund-button label. */
@@ -2000,17 +2014,24 @@ button {
     letter-spacing: 0.03em;
   }
 
-  /* "The first book…" moved below the fund button, white to read on the ground. */
+  /* "The first book…" (with signature) below the fund button, white on the
+     ground, larger, and centered in the gap down to the bottom of the window. */
   .mobile-ground-coming-soon {
-    margin: 24px auto 0;
-    max-width: 84%;
+    margin: 122px auto 0;
+    max-width: 86%;
     color: #ffffff;
     font-family: "Cormorant Garamond", Georgia, serif;
     font-weight: 600;
-    font-size: clamp(0.98rem, 4vw, 1.14rem);
-    line-height: 1.18;
+    font-size: clamp(1.16rem, 4.9vw, 1.36rem);
+    line-height: 1.16;
     text-align: center;
     text-shadow: 0 1px 7px #001410;
   }
   .mobile-ground-coming-soon em { font-style: italic; }
+  .mobile-ground-sig {
+    display: block;
+    margin-top: 4px;
+    font-style: italic;
+    font-size: 0.82em;
+  }
 }

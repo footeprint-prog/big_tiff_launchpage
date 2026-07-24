@@ -321,7 +321,7 @@ function initMobileExperience() {
     unfurl.style.clipPath = `inset(0 0 ${(1 - revealProgress) * 100}% 0)`;
     unfurl.style.pointerEvents = revealProgress > 0.88 ? "auto" : "none";
     const loginProgress = ease(range(revealProgress, 0.78, 0.97));
-    mobileLoginWisp.style.opacity = String(loginProgress * 0.68);
+    mobileLoginWisp.style.opacity = String(loginProgress * 0.45);
     mobileLoginWisp.style.transform = `translate3d(0, ${(1 - loginProgress) * 12}px, 0)`;
     mobileLoginWisp.style.pointerEvents = loginProgress > 0.82 ? "auto" : "none";
 
