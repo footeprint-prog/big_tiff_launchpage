@@ -513,10 +513,13 @@ button {
     background: var(--mobile-forest-deep);
   }
 
-  .desktop-world,
-  .portal-dialog {
+  .desktop-world {
     display: none;
   }
+  /* NOTE: .portal-dialog must NOT be force-hidden here. The mobile "follow the
+     light" wisp opens this shared login dialog; a closed <dialog> is already
+     hidden by the UA, and hiding it while open would lock scroll with nothing
+     visible. */
 
   .mobile-world {
     position: relative;
