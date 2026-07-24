@@ -1970,3 +1970,47 @@ button {
     animation: none;
   }
 }
+
+/* ===== Mobile announcement redesign (requested tweaks) ===== */
+@media (max-width: 700px) {
+  /* "The world is opening…" sits small, centered, up on the curl roll (id beats
+     the old .mobile-parchment-copy h2 sizing). */
+  #mobile-announcement-title.mobile-curl-line {
+    margin: -22px 0 0;
+    font-family: "Cinzel Decorative", Georgia, serif;
+    font-size: clamp(0.62rem, 2.7vw, 0.78rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--mobile-parchment-heading);
+  }
+
+  /* Big Tiff's World title, below the curl, on the parchment. */
+  .mobile-parchment-title {
+    display: block;
+    width: 74%;
+    margin: 8px auto 2px;
+  }
+
+  /* Bigger, more readable fund-button label. */
+  .mobile-fund-button span {
+    font-size: clamp(0.86rem, 3.8vw, 1.1rem);
+    letter-spacing: 0.03em;
+  }
+
+  /* "The first book…" moved below the fund button, white to read on the ground. */
+  .mobile-ground-coming-soon {
+    margin: 24px auto 0;
+    max-width: 84%;
+    color: #ffffff;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(0.98rem, 4vw, 1.14rem);
+    line-height: 1.18;
+    text-align: center;
+    text-shadow: 0 1px 7px #001410;
+  }
+  .mobile-ground-coming-soon em { font-style: italic; }
+}
